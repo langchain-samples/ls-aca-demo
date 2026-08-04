@@ -1,0 +1,18 @@
+[project]
+name = "ls-aca-demo"
+version = "0.1.0"
+description = "Teaching notebook: Azure Container Apps as a sandbox for Deep Agents"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "langchain-azure-container-apps[dynamic-sessions,sandboxes]",
+    "deepagents>=0.7.1,<0.8",
+    "langchain-openai>=1.0",
+    "python-dotenv~=1.0",
+    "jupyter>=1.1",
+]
+
+# Unreleased. Both Deep Agents backends and the ACA sandboxes integration exist
+# only on this branch; drop this block once the package is published to PyPI.
+[tool.uv.sources]
+langchain-azure-container-apps = { git = "https://github.com/langchain-ai/langchain-azure.git", branch = "feat/aca-06-deprecate-dynamic-sessions", subdirectory = "libs/azure-container-apps" }
