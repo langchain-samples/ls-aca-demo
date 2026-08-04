@@ -1,0 +1,23 @@
+README.md
+  s_e2cacb603cb494::t_89480b218787f1 6,8-9,11-32
+  s_e2cacb603cb494::t_316d1731e440af 98-103,106-107
+  s_e2cacb603cb494::t_64b086f98a83a6 108
+aca_production_patterns.ipynb
+  s_e2cacb603cb494::t_7d0388ecbc67aa 1-1800
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "d9804a28e5f01c8fb889373860649ea942aba16e",
+  "prompts": {},
+  "sessions": {
+    "s_e2cacb603cb494": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5e0ded80-b8b4-4be5-89f1-e890d488bc59",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Dariel Dato-on <293921406+darieldatoon@users.noreply.github.com>"
+    }
+  }
+}
