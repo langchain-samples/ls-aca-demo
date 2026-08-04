@@ -1,0 +1,31 @@
+aca_deepagents.ipynb
+  s_e2cacb603cb494::t_c482792cd3ed58 1-1756
+uv.lock
+  s_e2cacb603cb494::t_16e05dae36a031 1-3078
+.env.example
+  s_e2cacb603cb494::t_87d87ce7697404 1-24
+.gitignore
+  s_e2cacb603cb494::t_faba749897b98a 1-4
+.python-version
+  s_e2cacb603cb494::t_a277971d6831b1 1
+README.md
+  s_e2cacb603cb494::t_5a472f533e09a6 1-92
+pyproject.toml
+  s_e2cacb603cb494::t_6c27aa9524e972 1-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "9b950ec1559d8ce4795530991fe3c8cff36ddf13",
+  "prompts": {},
+  "sessions": {
+    "s_e2cacb603cb494": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5e0ded80-b8b4-4be5-89f1-e890d488bc59",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Dariel Dato-on <293921406+darieldatoon@users.noreply.github.com>"
+    }
+  }
+}
