@@ -3,16 +3,33 @@
 A teaching notebook for running agent-authored code on Azure Container Apps,
 using [`langchain-azure-container-apps`](https://github.com/langchain-ai/langchain-azure/tree/main/libs/azure-container-apps).
 
-[`aca_deepagents.ipynb`](aca_deepagents.ipynb) covers both ACA compute products,
-in order:
+## The notebooks
 
-1. **Dynamic sessions** — `SessionsPythonREPLTool`, `SessionsBashTool`, and the
-   `SessionsBashBackend` Deep Agents backend.
-2. **Sandboxes** — `ACASandbox`, the stateful Deep Agents backend: stop/resume,
-   `pip install` that survives, snapshots, and teardown.
-3. **Choosing between them** — they are different products, not tiers.
+**1. [`aca_deepagents.ipynb`](aca_deepagents.ipynb) — start here.** An
+introduction to both ACA compute products:
 
-The committed notebook has real outputs from a live run against Azure.
+- **Dynamic sessions** — `SessionsPythonREPLTool`, `SessionsBashTool`, and the
+  `SessionsBashBackend` Deep Agents backend.
+- **Sandboxes** — `ACASandbox`, the stateful Deep Agents backend: stop/resume,
+  `pip install` that survives, snapshots, and teardown.
+- **Choosing between them** — they are different products, not tiers.
+
+**2. [`aca_production_patterns.ipynb`](aca_production_patterns.ipynb) — the
+hardening pass.** Takes a real sandbox requirements list and answers each item
+with a mechanism and a measurement:
+
+| Topic | What it shows |
+|---|---|
+| Cold start | ~1s to exec-ready, measured three ways |
+| Per-session isolation | separate microVMs; why root inside one is safe |
+| Network isolation | default-deny egress that holds against raw Python |
+| Package whitelisting | allow-list + `get_egress_decisions()` escalation queue |
+| Resource caps | memory, CPU, disk; runaway loops bounded at exit 124 |
+| Baseline images | `commit()` → reusable `disk_id`, dependencies preinstalled |
+| Shared vs dedicated | auto-suspend makes per-session affordable |
+| Artifact workflow | agent writes a script → chart comes back as bytes |
+
+Both notebooks are committed with real outputs from live runs against Azure.
 
 ## Prerequisites
 
@@ -78,10 +95,16 @@ distinguishes them:
 
 ## Cost
 
-Part 2 **provisions a real Azure sandbox that bills until it is deleted.** The
-final cell deletes the sandbox and its snapshot, and reports any orphan it
-created. It only ever deletes what the notebook made — anything already in the
+Both notebooks **provision real Azure resources that bill until deleted** —
+sandboxes, and in the second notebook also a snapshot and a disk image.
+
+Each notebook registers everything it creates and removes it in a final teardown
+cell that keeps going if an individual delete fails, then reports anything left
+over. Neither touches resources it did not create: whatever is already in the
 group is recorded up front and left alone.
+
+`aca_production_patterns.ipynb` creates roughly fifteen sandboxes over its run,
+deleting most immediately after measuring them.
 
 If a run dies partway, sweep the group by hand:
 
