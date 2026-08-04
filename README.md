@@ -26,34 +26,55 @@ pool, and a **sandbox group**.
 | Session pools | `Azure ContainerApps Session Executor` |
 | Sandbox group | `Container Apps SandboxGroup Data Owner` |
 
-**A tool-calling model.** The notebook uses `langchain-openai` and reads
-`OPENAI_API_KEY` (plus `OPENAI_BASE_URL` if you route through a gateway) from the
-environment. Any tool-calling chat model works — swap the one line in the setup
-cell.
+**A tool-calling model.** The notebook uses `langchain-openai`. Any tool-calling
+chat model works — swap the one line in the model cell.
 
 ## Setup
 
 ```bash
 uv sync
-cp .env.example .env     # fill in your resource coordinates
+cp .env.example .env     # then fill it in
 az login
-```
-
-`.env` holds resource coordinates only — it is gitignored, and no credential
-belongs in it. Auth is `DefaultAzureCredential`, which shells out to the Azure
-CLI. If you keep multiple CLI profiles, select one **before** launching Jupyter:
-
-```bash
-export AZURE_CONFIG_DIR=~/.config/azure/<profile>
-az account show --query "{sub:name, user:user.name}" -o tsv
-```
-
-Then:
-
-```bash
-export OPENAI_API_KEY=...
 uv run jupyter lab aca_deepagents.ipynb
 ```
+
+### Put everything in `.env` — including the model key
+
+**Exporting variables in a terminal is not enough.** VS Code, and any editor
+launched from Finder or the Dock, spawns the notebook kernel itself and inherits
+none of your shell configuration — no `~/.zshrc`, no fish `conf.d`. The notebook
+calls `load_dotenv()`, which reads `.env` and nothing else.
+
+`.env` is gitignored and never leaves your machine; the committed history has
+been checked for this.
+
+Two entries are easy to miss, and each fails somewhere different:
+
+| Variable | Missing it breaks |
+|---|---|
+| `OPENAI_API_KEY` | the model cell, immediately |
+| `AZURE_CONFIG_DIR` | **every Azure cell**, with an opaque `ClientAuthenticationError` |
+
+`AZURE_CONFIG_DIR` selects which `az login` profile `DefaultAzureCredential`
+uses. Omit it and you get whichever profile was default — often a different
+tenant, which fails to get a token at all rather than reporting a wrong account.
+It must be an **absolute path**; `dotenv` does not expand `~`. Verify with:
+
+```bash
+AZURE_CONFIG_DIR=/Users/you/.config/azure/<profile> \
+  az account show --query "{sub:name, user:user.name}" -o tsv
+```
+
+### If Azure cells fail with `ClientAuthenticationError`
+
+Three unrelated problems produce that same error. The notebook's preflight cell
+distinguishes them:
+
+1. **`az` is not on the kernel's `PATH`.** A GUI-launched editor gets the system
+   `PATH`, which excludes Homebrew — so `/opt/homebrew/bin/az` is invisible.
+   Launch from a terminal (`code .`) or let the preflight cell patch `PATH`.
+2. **Wrong `az` profile** — set `AZURE_CONFIG_DIR`.
+3. **Not logged in** — `az login`.
 
 ## Cost
 
